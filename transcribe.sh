@@ -1,0 +1,1 @@
+whisper $1 --model=small --language=English --output_dir=output --task transcribe

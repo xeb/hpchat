@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hpchat"
+version = "0.1.0"
+description = "Harbor Point Chat Bot"
+authors = [
+    {name = "Mark Kockerbeck", email = "xeb@hey.com"},
+]
+requires-python = ">=3.12"
+dependencies = [
+    "llm",
+    "pyfiglet",
+    "termcolor",
+    "pyyaml",
+    "fire",
+    "tiktoken",
+    "simple-term-menu",
+    "llm-claude-3",
+    "llm-gemini",
+]
+
+[tool.setuptools]
+packages = ["hpchat"]
