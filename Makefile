@@ -11,12 +11,10 @@ setup: ## Sets up the project from a fresh clone
 chat: ## Starts a new chat session
 	python -m hpchat.cli
 
-ask: ## Builds the C++ library
-	echo 'python -m hpchat.runtime --question="What is best in life?"'
-	python -m hpchat.runtime --question="What is the significance of the 'Space Jockey'?"
-
+transcribe: ## Transcribes all videos
+	./transcribe.sh
+	
 clean: ## remove build artifacts
-	rm -rf venv/
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
