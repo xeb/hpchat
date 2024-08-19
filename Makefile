@@ -12,7 +12,7 @@ chat: ## Starts a new chat session
 	python -m hpchat.cli
 
 transcribe: ## Transcribes all videos
-	./transcribe.sh
+	python transcribe.py
 	
 clean: ## remove build artifacts
 	rm -fr build/
