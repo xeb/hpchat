@@ -27,7 +27,7 @@ Now you need to register any model keys. For gemini (current default), use:
 ```
 llm keys set gemini
 ```
-Which you can get at (aistudio.google.com)[https://aistudio.google.com].
+Which you can get at [aistudio.google.com](https://aistudio.google.com).
 
 
 # Usage
