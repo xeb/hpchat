@@ -13,14 +13,11 @@ CORS(app)
 
 @app.route('/')
 def index():
-    parent_dir = Path(__file__).parent.parent
-    output_dir = parent_dir / 'output'
-    txt_files = list(output_dir.glob('*.txt')) 
+    file_names, _ = runtime.get_sermons()
 
-
-    return render_template('index.html', sermons=txt_files)
-    selected_file = txt_files[selected_index]    
-    return str(selected_file.resolve())
+    return render_template('index.html', sermons=file_names)
+    # selected_file = txt_files[selected_index]    
+    # return str(selected_file.resolve())
 
 @app.route('/chat', methods=['POST'])
 def chat():
