@@ -4,7 +4,7 @@ __pycache__
 .data
 venv*
 wvenv*
-
+ios_app/
 .data/db.sqlite
 .data
 labeler/*.csv

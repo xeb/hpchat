@@ -2,17 +2,13 @@
 import llm
 import fire
 import yaml
-from llm_gemini import GeminiPro
 from pathlib import Path
-
-@llm.hookimpl
-def register_models(register):
-    register(GeminiPro("gemini-1.5-pro-exp-0801"))
 
 class Runtime():
     def __init__(self, config_file="config.yaml"):
         self.config = self.read_config(config_file)
-        self.runtime_model = self.config.get("runtime_model", "claude-3-5-sonnet-20240620")
+        self.runtime_model = self.config.get("runtime_model", None)
+        print(self.runtime_model)
 
     def read_config(self, config_file):
         """ Reads config.yaml from local path and returns it as a dictionary"""
@@ -29,6 +25,25 @@ class Runtime():
     @property
     def system_prompt(self):
         return self.config.get("system_prompt", "")
+
+    def get_sermons(self):
+        """Presents a menu of the sermon to select"""
+        parent_dir = Path(__file__).parent.parent
+        output_dir = parent_dir / 'output'
+        txt_files = list(output_dir.glob('*.txt'))
+        
+        if not txt_files:
+            print("No text files found in the output directory.")
+            return None
+        
+        file_names = [file.name for file in txt_files]
+        return (file_names, txt_files)
+
+    def format_system_prompt(self, menu_entry_index):
+        with open(menu_entry_index, 'r', encoding='utf-8') as file:
+            content = file.read()
+        
+        return self.system_prompt.format(sermon=content)
 
     @property
     def assistant_color(self):

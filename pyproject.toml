@@ -21,7 +21,6 @@ dependencies = [
     "tiktoken",
     "simple-term-menu",
     "llm-claude-3",
-    "llm-gemini",
     "openai-whisper",
 ]
 

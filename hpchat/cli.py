@@ -7,17 +7,8 @@ from termcolor import colored
 from simple_term_menu import TerminalMenu
 from pathlib import Path
 
-def select_text_file(title=None):
-    """Presents a menu of the sermon to select"""
-    parent_dir = Path(__file__).parent.parent
-    output_dir = parent_dir / 'output'
-    txt_files = list(output_dir.glob('*.txt'))
-    
-    if not txt_files:
-        print("No text files found in the output directory.")
-        return None
-    
-    file_names = [file.name for file in txt_files]
+def select_text_file(title=None, runtime: Runtime = None):
+    file_names, txt_files = runtime.get_sermons()
     menu = TerminalMenu(file_names, title=title)
     selected_index = menu.show()    
     if selected_index is None:
@@ -60,11 +51,6 @@ def chatloop(runtime: Runtime = None, system: str = None):
     readline.write_history_file(history_file)
     return
 
-def format_system_prompt(system_prompt, menu_entry_index):
-    with open(menu_entry_index, 'r', encoding='utf-8') as file:
-        content = file.read()
-    
-    return system_prompt.format(sermon=content)
 
 def main():
     """Primary CLI entrypoint"""
@@ -75,10 +61,10 @@ def main():
     print(colored(runtime.system_prompt, color='grey'))
     print("--------------------------------")
     print("Please select a sermon you would like to discuss and hit ENTER:\nType '" + colored("exit", "red") + "' to exit.\n\n")
-    menu_entry_index = select_text_file()
+    menu_entry_index = select_text_file(runtime=runtime)
     print(f'You selected option {menu_entry_index}')
 
-    formatted_system_prompt = format_system_prompt(runtime.system_prompt, menu_entry_index)
+    formatted_system_prompt = runtime.format_system_prompt(menu_entry_index)
     chatloop(runtime, system=formatted_system_prompt)
 
 if __name__ == '__main__':

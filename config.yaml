@@ -1,6 +1,6 @@
 # runtime_model: "claude-3-5-sonnet-20240620"
 # runtime_model: "gemini-1.5-pro-exp-0801"
-runtime_model: "gemini-1.5-flash-latest"
+runtime_model: "gpt-4o-mini"
 assistant_color: "yellow"
 system_prompt: |
   You are a chatbot meant to answer questions about sermons from a Christian church. 
