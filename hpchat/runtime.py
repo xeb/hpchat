@@ -53,19 +53,6 @@ class Runtime():
         """Presents a menu of the sermon to select"""
         with open(self.sermon_list_path, 'r') as file:
             return yaml.safe_load(file)
-        
-        return [
-            {
-                "url_slug": "gods_invitation",
-                "title": "Come Home: An Invitation to Return to God's Embrace",
-                "file_path": "/Users/xeb/projects/hpchat/output/June 16, 2024 ｜ Jeff Maguire ｜ Harbor Point Church-segment.txt"
-             },
-             {
-                 "url_slug": "naming_anxiety",
-                 "title": "Naming Anxiety: Finding Authority and Peace in Christ",
-                 "file_path": "Users/xeb/projects/hpchat/output/August 11, 2024 ｜ Harbor Point 10AM-segment.txt"
-             }
-        ]
 
     def parse_object(self, prompt: str, format: BaseModel, system_prompt: str = None):
         """Parse the object using the OpenAI API"""

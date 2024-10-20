@@ -7,3 +7,4 @@ class ParsedSermon(BaseModel):
     one_sentence_summary: str = None
     announcements: List[str] = None
     biblical_references: List[str] = None
+    speaker_name: str = None

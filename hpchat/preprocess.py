@@ -29,6 +29,7 @@ class Preprocessor():
                     "one_sentence_summary": parsed_sermon.one_sentence_summary,
                     "announcements": [a for a in parsed_sermon.announcements],
                     "biblical_references": [b for b in parsed_sermon.biblical_references],
+                    "speaker_name": parsed_sermon.speaker_name,
                     "file_path": str(full_sermon_path),
                     "transcript": transcript
                 }
