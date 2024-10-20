@@ -13,23 +13,22 @@ CORS(app)
 
 @app.route('/')
 def index():
-    parent_dir = Path(__file__).parent.parent
-    output_dir = parent_dir / 'output'
-    txt_files = list(output_dir.glob('*.txt')) 
+    return render_template('index.html', sermons=runtime.get_sermons())
 
-
-    return render_template('index.html', sermons=txt_files)
-    selected_file = txt_files[selected_index]    
-    return str(selected_file.resolve())
+@app.route('/sermons/<slug>')
+def sermon(slug):
+    return render_template('sermon.html', slug=slug)
 
 @app.route('/chat', methods=['POST'])
 def chat():
+    print("----")
     data = request.get_json()
     text = data.get('text', None)
+    print(text);
     if not text:
         raise Exception("You must ask for SOMETHING")
     
-    sermon = "/Users/xeb/projects/hpchat/output/June 16, 2024 ｜ Jeff Maguire ｜ Harbor Point Church-segment.txt"
+    sermon = "/Users/paulgustafson/projects/hpchat/output/June 16, 2024 ｜ Jeff Maguire ｜ Harbor Point Church-segment.txt"
     print(f"Sermon: {sermon=}")
     formatted_system_prompt = runtime.format_system_prompt(sermon)
     print(f"formatted_system_prompt: {formatted_system_prompt=}")
