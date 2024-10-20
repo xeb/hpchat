@@ -16,6 +16,8 @@ dependencies = [
     "termcolor",
     "pyyaml",
     "fire",
+    "flask",
+    "flask_cors",
     "tiktoken",
     "simple-term-menu",
     "llm-claude-3",

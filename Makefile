@@ -5,6 +5,9 @@ help:
 	@echo "---------------------"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+server: ## Starts the webserver
+	python hpchat/server.py
+
 setup: ## Sets up the project from a fresh clone
 	pip install -e .
 
