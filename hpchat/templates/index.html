@@ -3,20 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harbor Point - Chatbot</title>
-    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <title>Form with AJAX Submission</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-        <div class="p-8">
-            <h1 class="text-2xl font-bold mb-4">HP Chat</h1>
-            <form action="{{url_for('completions')}}" method="post" class="mb-4">
-                <input type="text" name="task" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Go!</button>
-            </form>
-            <ul class="list-decimal">
-            </ul>
-        </div>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Harbor Point - Chat</h1>
+        <form id="ajaxForm" class="space-y-4">
+            <div>
+                <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Select the sermon:</label>
+
+                <select id="color" name="color" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="">--Please choose an option--</option>
+                    {% for sermon in sermons %}
+                        <option value="red">{{sermon}}</option>
+                    {% endfor %}
+                </select>
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">What do you wanna ask?:</label>
+                    <input type="text" id="name" name="name" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter your name">
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Submit
+                </button>
+            </div>
+        </form>
+        <div id="response" class="mt-4 text-center text-sm"></div>
     </div>
+
+    <script>
+        document.getElementById('ajaxForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const color = form.elements.color.value;
+            const responseDiv = document.getElementById('response');
+            
+            // Create a new XMLHttpRequest object
+            const xhr = new XMLHttpRequest();
+            
+            // Configure it: POST-request for the URL /submit-form
+            xhr.open('POST', '/chat', true);
+            
+            // Set the Content-Type header
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            
+            // Set up a handler for when the request finishes
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    responseDiv.textContent = 'Form submitted successfully!';
+                    responseDiv.className = 'mt-4 text-center text-sm text-green-600';
+                } else {
+                    responseDiv.textContent = 'Error submitting form. Please try again.';
+                    responseDiv.className = 'mt-4 text-center text-sm text-red-600';
+                }
+            };
+            
+            // Send the request
+            xhr.send('color=' + encodeURIComponent(color));
+        });
+    </script>
 </body>
 </html>
