@@ -8,6 +8,9 @@ help:
 server: ## Starts the webserver
 	python hpchat/server.py
 
+process: ## Preprocesses the video data in videos and the sermon listing
+	python hpchat/preprocess.py
+
 setup: ## Sets up the project from a fresh clone
 	pip install -e .
 
@@ -18,16 +21,4 @@ transcribe: ## Transcribes all videos
 	python transcribe.py
 	
 clean: ## remove build artifacts
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .eggs/
-	rm -fr notebooks/.ipynb_checkpoints/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -f {} +
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
-	rm -fr .tox/
-	rm -f .coverage
-	rm -fr htmlcov/
+	find output -type f ! -name "*.txt" -delete

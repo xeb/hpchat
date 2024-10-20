@@ -27,5 +27,6 @@ DURATION=$3
 yt-dlp -f best --postprocessor-args "-ss $START_TIME -t $DURATION" -o "%(title)s-segment.%(ext)s" "$URL"
 
 echo "Download complete, moving into videos directory..."
+mkdir -p videos
 mv *.mp4 videos/
 
