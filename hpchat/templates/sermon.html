@@ -29,13 +29,22 @@
         <div id="response" class="mt-4 text-center text-sm"></div>
         <ul id="responseList" class="mt-4 list-disc pl-5"></ul>
 
-        <b>{{sermon.one_sentence_summary}}</b>
-
+        <b>One sentence summary: </b><p>{{sermon.one_sentence_summary}}</p>
+        <br/><br/>
         {% if sermon.announcements | length > 0 %}
             <h5>Announcements:</h5>
             <ul>
             {% for announcement in sermon.announcements %}
                 <li>{{announcement}}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <br/>
+        {% if sermon.biblical_references | length > 0 %}
+            <h5>Biblical References:</h5>
+            <ul>
+            {% for bref in sermon.biblical_references %}
+                <li>{{bref}}</li>
             {% endfor %}
             </ul>
         {% endif %}
