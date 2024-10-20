@@ -6,15 +6,17 @@
     <title>Form with AJAX Submission</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-md w-96">
-        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Harbor Point - Chat</h1>
+<body class="bg-gray-100 flex justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">{{slug}}</h1>
         <form id="ajaxForm" class="space-y-4">
             <div>
                 <!-- <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Select the sermon:</label> -->
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">What do you wanna know about {{slug}}:</label>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">How do you want to interact with the sermon, ask anything!</label>
                     <input type="text" id="name" name="name" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="What do you wanna know?">
+                    <input type="hidden" id="slug" name="slug" value="{{slug}}">
+                    <!-- <input type="hidden" id="hidden-input" name="hidden-input" value="some-hidden-value"> -->
                 </div>
             </div>
             <div>
@@ -24,6 +26,7 @@
             </div>
         </form>
         <div id="response" class="mt-4 text-center text-sm"></div>
+        <ul id="responseList" class="mt-4 list-disc pl-5"></ul>
     </div>
 
     <script>
@@ -34,6 +37,9 @@
             // console.log (form.elements.name.value);
             const msg = form.elements.name.value;
             const responseDiv = document.getElementById('response');
+            const question = document.getElementById('name');
+            const slug = document.getElementById('slug').value;
+            console.log(slug);
             
             // Create a new XMLHttpRequest object
             const xhr = new XMLHttpRequest();
@@ -47,8 +53,47 @@
             // Set up a handler for when the request finishes
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    responseDiv.textContent = 'Form submitted successfully!';
-                    responseDiv.className = 'mt-4 text-center text-sm text-green-600';
+                    // const responseData = JSON.parse(xhr.responseText);
+                    // console.log (responseData);
+                    // responseDiv.textContent = responseData.response;
+                    // responseDiv.className = 'mt-4 text-center text-sm text-green-600';
+                    // Parse the JSON response
+                    const responseData = JSON.parse(xhr.responseText);
+                    
+                    // Get the response list
+                    const responseList = document.getElementById('responseList');
+                    
+                    // Create a new list item
+                    const listItem = document.createElement('li');
+                    listItem.className = 'p-3 bg-gray-50 rounded shadow-sm transition-all duration-300 ease-in-out';
+                    
+                    // Create content for the list item
+                    // let content = '';
+                    let content = `<strong class="block text-sm text-gray-600 mb-1">Response at ${new Date().toLocaleTimeString()}:</strong>`;
+                    content += '<ul class="list-disc pl-5 space-y-1">';
+                    for (const [key, value] of Object.entries(responseData)) {
+                        // content += `<li><strong>${key}:</strong> ${value}</li>`;
+                        content += `<li>${value}</li>`;
+
+                    }
+                    content += '</ul>';
+                    
+                    // Set the content of the list item
+                    listItem.innerHTML = content;
+                    
+                    // Add a subtle animation effect
+                    listItem.style.opacity = '0';
+                    listItem.style.transform = 'translateY(-10px)';
+                    
+                    // Prepend the new list item to the response list
+                    responseList.insertBefore(listItem, responseList.firstChild);
+                    
+                    // Trigger the animation
+                    setTimeout(() => {
+                        listItem.style.opacity = '1';
+                        listItem.style.transform = 'translateY(0)';
+                    }, 10);
+                    question.value = "";
                 } else {
                     responseDiv.textContent = 'Error submitting form. Please try again.';
                     responseDiv.className = 'mt-4 text-center text-sm text-red-600';
@@ -56,8 +101,10 @@
             };
             
             const req = {
+                slug: slug,
                 text: msg
             }
+            console.log(req);
             // Send the requestd
             xhr.send(JSON.stringify(req));
             // xhr.send('text=' + encodeURIComponent(msg));
