@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, render_template
 from flask_cors import CORS
 import json
 import time
@@ -8,6 +8,10 @@ app = Flask(__name__)
 runtime = Runtime()
 CORS(app)
 DEFAULT_MODEL = "project-chat"
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/v1/models', methods=['GET'])
 def list_models():
@@ -95,7 +99,9 @@ def chat_completions():
 
 @app.route('/v1/completions', methods=['POST'])
 def completions():
+    print("v1/completions")
     data = request.json
+    print(request)
     model = data.get('model', 'text-davinci-003')
     prompt = data.get('prompt', '')
     
