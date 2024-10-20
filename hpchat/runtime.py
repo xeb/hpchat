@@ -76,12 +76,6 @@ class Runtime():
         )
         return completion.choices[0].message.parsed
 
-    def format_system_prompt(self, full_sermon_path):
-        with open(full_sermon_path, 'r', encoding='utf-8') as file:
-            content = file.read()
-        
-        return self.system_prompt.format(sermon=content)
-
     @property
     def assistant_color(self):
         return self.config.get("assistant_color", "yellow")

@@ -17,7 +17,8 @@ def index():
 
 @app.route('/sermons/<slug>')
 def sermon(slug):
-    return render_template('sermon.html', slug=slug)
+    sermon = runtime.get_sermon_by_slug(slug)
+    return render_template('sermon.html', slug=slug, sermon=sermon)
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -30,11 +31,12 @@ def chat():
     
     # TODO: We need to take the slug from the data, and then lookup the right sermon
     sermon = runtime.get_sermon_by_slug(data["slug"])
-    print(sermon["file_path"])
+    # print(sermon["file_path"])
     
-    sermon = "/Users/paulgustafson/working/hpchat/sermons/August 11, 2024 ｜ Harbor Point 10AM-segment.txt"
+    # sermon = "/Users/paulgustafson/working/hpchat/sermons/August 11, 2024 ｜ Harbor Point 10AM-segment.txt"
     print(f"Sermon: {sermon=}")
-    formatted_system_prompt = runtime.format_system_prompt(sermon)
+    formatted_system_prompt = runtime.system_prompt.format(sermon=sermon["transcript"])
+    
     # print(f"formatted_system_prompt: {formatted_system_prompt=}")
     response = convo.prompt(text, system=formatted_system_prompt, stream=True)
     # print(response)

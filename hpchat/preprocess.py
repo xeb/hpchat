@@ -23,6 +23,7 @@ class Preprocessor():
                     system_prompt="Process this transcript into the specified sermon format, as best you can.",
                     format=ParsedSermon)
                 
+                # TODO: dynamically the keys from ParsedSermon to this dict
                 sermon = {
                     "url_slug": parsed_sermon.url_slug,
                     "title": parsed_sermon.title,
@@ -39,8 +40,6 @@ class Preprocessor():
         with open(self.runtime.sermon_list_path, 'w') as f:
             yaml.dump(sermons, f)
 
-
-        
 
     def clean(self):
         for filename in os.listdir(self.runtime.sermons_path):
@@ -89,6 +88,6 @@ if __name__ == "__main__":
     print(preprocessor.runtime.sermons_path)
     # pass
     preprocessor.clean()
-    preprocessor.transcribe_videos()
-    #preprocessor.process_sermons()
+    # preprocessor.transcribe_videos()
+    preprocessor.process_sermons()
 

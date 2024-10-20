@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form with AJAX Submission</title>
+    <title>HPChat</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex justify-center min-h-screen">
     <div class="bg-white p-8 rounded-lg shadow-md w-full">
-        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">{{slug}}</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">{{sermon.title}}</h1>
+        <h4>by {{sermon.speaker_name}}</h4>
         <form id="ajaxForm" class="space-y-4">
             <div>
                 <!-- <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Select the sermon:</label> -->
@@ -27,6 +28,17 @@
         </form>
         <div id="response" class="mt-4 text-center text-sm"></div>
         <ul id="responseList" class="mt-4 list-disc pl-5"></ul>
+
+        <b>{{sermon.one_sentence_summary}}</b>
+
+        {% if sermon.announcements | length > 0 %}
+            <h5>Announcements:</h5>
+            <ul>
+            {% for announcement in sermon.announcements %}
+                <li>{{announcement}}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 
     <script>
