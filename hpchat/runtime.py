@@ -27,7 +27,7 @@ class Runtime():
         self.sermons_path = self.root_path / "sermons"
         Path(self.sermons_path).mkdir(exist_ok=True)
         
-        self.media_path = self.root_path / "videos"
+        self.media_path = self.root_path / "media"
         Path(self.media_path).mkdir(exist_ok=True)
 
         self.sermon_list_path = self.sermons_path / "sermon_list.yaml"
@@ -53,6 +53,15 @@ class Runtime():
         """Presents a menu of the sermon to select"""
         with open(self.sermon_list_path, 'r') as file:
             return yaml.safe_load(file)
+
+    def get_sermon_by_slug(self, slug):
+        """Retrieves a specific sermon by its slug"""
+        sermons = self.get_sermons()
+        try:
+            return next(sermon for sermon in sermons if sermon["url_slug"] == slug)
+        except StopIteration:
+            return None  # or raise an exception if you prefer
+
 
     def parse_object(self, prompt: str, format: BaseModel, system_prompt: str = None):
         """Parse the object using the OpenAI API"""

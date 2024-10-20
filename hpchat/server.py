@@ -24,14 +24,18 @@ def chat():
     print("----")
     data = request.get_json()
     text = data.get('text', None)
-    print(text);
+    print(data["slug"])
     if not text:
         raise Exception("You must ask for SOMETHING")
     
-    sermon = "/Users/paulgustafson/projects/hpchat/output/June 16, 2024 ｜ Jeff Maguire ｜ Harbor Point Church-segment.txt"
+    # TODO: We need to take the slug from the data, and then lookup the right sermon
+    sermon = runtime.get_sermon_by_slug(data["slug"])
+    print(sermon["file_path"])
+    
+    sermon = "/Users/paulgustafson/working/hpchat/sermons/August 11, 2024 ｜ Harbor Point 10AM-segment.txt"
     print(f"Sermon: {sermon=}")
     formatted_system_prompt = runtime.format_system_prompt(sermon)
-    print(f"formatted_system_prompt: {formatted_system_prompt=}")
+    # print(f"formatted_system_prompt: {formatted_system_prompt=}")
     response = convo.prompt(text, system=formatted_system_prompt, stream=True)
     # print(response)
     # code.interact(local=locals())
@@ -39,7 +43,7 @@ def chat():
     print("Streaming response:")
     chunks = []
     for chunk in response:
-        print(chunk)
+        # print(chunk)
         chunks.append(chunk)
 
     return jsonify({"response": "".join(chunks)})
