@@ -44,7 +44,7 @@ class Preprocessor():
     def clean(self):
         for filename in os.listdir(self.runtime.sermons_path):
             file_path = os.path.join(self.runtime.sermons_path, filename)
-            if os.path.isfile(file_path) and not filename.endswith('.txt'):
+            if os.path.isfile(file_path) and not filename.endswith('.txt') and not filename.endswith('.yaml'):
                 try:
                     os.remove(file_path)
                     print(f"Deleted: {file_path}")
@@ -55,7 +55,7 @@ class Preprocessor():
         import whisper
         video_dir = self.runtime.media_path
         output_dir = self.runtime.sermons_path
-        print("Transcribing videos from {video_dir} to {output_dir}")
+        print(f"Transcribing videos from {video_dir} to {output_dir}")
         
         def get_model():
             return whisper.load_model("medium")
