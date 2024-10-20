@@ -88,6 +88,6 @@ if __name__ == "__main__":
     print(preprocessor.runtime.sermons_path)
     # pass
     preprocessor.clean()
-    preprocessor.process_sermons()
-    # preprocessor.transcribe_videos()
+    preprocessor.transcribe_videos()
+    #preprocessor.process_sermons()
 
