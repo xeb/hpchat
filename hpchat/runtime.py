@@ -67,6 +67,15 @@ class Runtime():
              }
         ]
 
+    def get_sermon_by_slug(self, slug):
+        """Retrieves a specific sermon by its slug"""
+        sermons = self.get_sermons()
+        try:
+            return next(sermon for sermon in sermons if sermon["url_slug"] == slug)
+        except StopIteration:
+            return None  # or raise an exception if you prefer
+
+
     def parse_object(self, prompt: str, format: BaseModel, system_prompt: str = None):
         """Parse the object using the OpenAI API"""
         client = self.oai_client
