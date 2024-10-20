@@ -40,16 +40,6 @@ class Runtime():
                  "file_path": "Users/xeb/projects/hpchat/output/August 11, 2024 ｜ Harbor Point 10AM-segment.txt"
              }
         ]
-        # parent_dir = Path(__file__).parent.parent
-        # output_dir = parent_dir / 'output'
-        # txt_files = list(output_dir.glob('*.txt'))
-        
-        # if not txt_files:
-        #     print("No text files found in the output directory.")
-        #     return None
-        
-        # file_names = [file.name for file in txt_files]
-        # return (file_names, txt_files)
 
     def format_system_prompt(self, menu_entry_index):
         with open(menu_entry_index, 'r', encoding='utf-8') as file:
