@@ -28,7 +28,7 @@ def chatloop(runtime: Runtime = None, system: str = None):
 
     while True:
         try:
-            user_input = input(colored("You: ", "grey"))
+            user_input = input(colored("You: ", "white"))
         except KeyboardInterrupt:
             print("\nExiting...")
             break
@@ -58,7 +58,7 @@ def main():
     welcome_message = pyfiglet.figlet_format("HPChat")
     print(colored(welcome_message, color='blue'))
     print(colored("Using the following system_prompt:", color='green'))
-    print(colored(runtime.system_prompt, color='grey'))
+    print(colored(runtime.system_prompt, color='white'))
     print("--------------------------------")
     print("Please select a sermon you would like to discuss and hit ENTER:\nType '" + colored("exit", "red") + "' to exit.\n\n")
     menu_entry_index = select_text_file(runtime=runtime)

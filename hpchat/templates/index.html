@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harbor Point - Chatbot</title>
     <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <script type="text/javascript">
+        
+    </script>
 </head>
 <body class="bg-gray-100 p-8">
     <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
         <div class="p-8">
             <h1 class="text-2xl font-bold mb-4">HP Chat</h1>
-            <form action="{{url_for('completions')}}" method="post" class="mb-4">
+            <form action="{{url_for('chat')}}" method="post" class="mb-4">
                 <input type="text" name="task" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Go!</button>
             </form>
