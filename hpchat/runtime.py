@@ -27,7 +27,7 @@ class Runtime():
         self.sermons_path = self.root_path / "sermons"
         Path(self.sermons_path).mkdir(exist_ok=True)
         
-        self.media_path = self.root_path / "videos"
+        self.media_path = self.root_path / "media"
         Path(self.media_path).mkdir(exist_ok=True)
 
         self.sermon_list_path = self.sermons_path / "sermon_list.yaml"
