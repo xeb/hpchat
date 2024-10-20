@@ -1,25 +1,49 @@
 import os
+import yaml
 import tqdm
-from pathlib import Path
+from itertools import chain
 from hpchat.runtime import Runtime
-
+from hpchat.sermon import ParsedSermon
 
 class Preprocessor():
     def __init__(self, runtime: Runtime = Runtime()):
-        self.root_path = runtime.root_path
-        
-        self.sermons_path = self.root_path / "sermons"
-        Path(self.sermons_path).mkdir(exist_ok=True)
-        
-        self.video_path = self.root_path / "videos"
-        Path(self.video_path).mkdir(exist_ok=True)
-
-        self.sermon_list_path = self.sermons_path / "sermon_list.yaml"
+        self.runtime = runtime
         pass
         
+    def process_sermons(self):
+        sermons = []
+        for full_sermon_path in list(self.runtime.sermons_path.glob('*.txt')):
+            with open(full_sermon_path, 'r') as f:
+                print(f"Reading {full_sermon_path}")
+                transcript = f.read()
+
+                print("Parsing sermon content")
+                parsed_sermon = self.runtime.parse_object(
+                    prompt=f"The transcript is: <TRANSCRIPT>{transcript}</TRANSCRIPT>", 
+                    system_prompt="Process this transcript into the specified sermon format, as best you can.",
+                    format=ParsedSermon)
+                
+                sermon = {
+                    "url_slug": parsed_sermon.url_slug,
+                    "title": parsed_sermon.title,
+                    "one_sentence_summary": parsed_sermon.one_sentence_summary,
+                    "announcements": [a for a in parsed_sermon.announcements],
+                    "biblical_references": [b for b in parsed_sermon.biblical_references],
+                    "file_path": str(full_sermon_path),
+                    "transcript": transcript
+                }
+
+                sermons.append(sermon)
+        
+        with open(self.runtime.sermon_list_path, 'w') as f:
+            yaml.dump(sermons, f)
+
+
+        
+
     def clean(self):
-        for filename in os.listdir(self.sermons_path):
-            file_path = os.path.join(self.sermons_path, filename)
+        for filename in os.listdir(self.runtime.sermons_path):
+            file_path = os.path.join(self.runtime.sermons_path, filename)
             if os.path.isfile(file_path) and not filename.endswith('.txt'):
                 try:
                     os.remove(file_path)
@@ -29,14 +53,14 @@ class Preprocessor():
 
     def transcribe_videos(self):
         import whisper
-        video_dir = self.video_path
-        output_dir = self.sermons_path
+        video_dir = self.runtime.media_path
+        output_dir = self.runtime.sermons_path
         print("Transcribing videos from {video_dir} to {output_dir}")
         
         def get_model():
             return whisper.load_model("medium")
-
-        pbar = tqdm.tqdm(list(video_dir.glob("*.mp4")))
+        
+        pbar = tqdm.tqdm(list(chain(video_dir.glob("*.mp4"), video_dir.glob("*.mp3"))))
         model = None
         for video_file in pbar:
             output_file = output_dir / f"{video_file.stem}.txt"
@@ -61,9 +85,9 @@ class Preprocessor():
 
 if __name__ == "__main__":
     preprocessor = Preprocessor()
-    print(preprocessor.sermons_path)
+    print(preprocessor.runtime.sermons_path)
     # pass
     preprocessor.clean()
-
-    preprocessor.transcribe_videos()
+    preprocessor.process_sermons()
+    # preprocessor.transcribe_videos()
 

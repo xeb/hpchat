@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 class Runtime():
     def __init__(self, config_file="config.yaml"):
+        self.root_path = Path(__file__).parent.parent
         self.config = self.read_config(config_file)
         self.runtime_model = self.config.get("runtime_model", None)
         
@@ -22,11 +23,15 @@ class Runtime():
         
         self.oai_client = OpenAI(api_key=openai_api_key)
         self.openai_api_key = openai_api_key
-        # print(self.runtime_model)
 
-    @property
-    def root_path(self):
-        return Path(__file__).parent.parent
+        self.sermons_path = self.root_path / "sermons"
+        Path(self.sermons_path).mkdir(exist_ok=True)
+        
+        self.media_path = self.root_path / "videos"
+        Path(self.media_path).mkdir(exist_ok=True)
+
+        self.sermon_list_path = self.sermons_path / "sermon_list.yaml"
+        pass
 
     def read_config(self, config_file):
         """ Reads config.yaml from local path and returns it as a dictionary"""
@@ -46,6 +51,9 @@ class Runtime():
 
     def get_sermons(self):
         """Presents a menu of the sermon to select"""
+        with open(self.sermon_list_path, 'r') as file:
+            return yaml.safe_load(file)
+        
         return [
             {
                 "url_slug": "gods_invitation",
