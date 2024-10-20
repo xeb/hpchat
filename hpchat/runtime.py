@@ -21,6 +21,7 @@ class Runtime():
             raise ValueError("OPENAI_API_KEY environment variable")
         
         self.oai_client = OpenAI(api_key=openai_api_key)
+        llm.configure_openai(api_key=openai_api_key)
         # print(self.runtime_model)
 
     @property
@@ -71,8 +72,8 @@ class Runtime():
         )
         return completion.choices[0].message.parsed
 
-    def format_system_prompt(self, menu_entry_index):
-        with open(menu_entry_index, 'r', encoding='utf-8') as file:
+    def format_system_prompt(self, full_sermon_path):
+        with open(full_sermon_path, 'r', encoding='utf-8') as file:
             content = file.read()
         
         return self.system_prompt.format(sermon=content)
