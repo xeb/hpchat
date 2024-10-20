@@ -21,7 +21,7 @@ class Runtime():
             raise ValueError("OPENAI_API_KEY environment variable")
         
         self.oai_client = OpenAI(api_key=openai_api_key)
-        llm.configure_openai(api_key=openai_api_key)
+        self.openai_api_key = openai_api_key
         # print(self.runtime_model)
 
     @property
@@ -85,6 +85,7 @@ class Runtime():
     def create_convo(self):
         """Create a new conversation"""
         model = llm.get_model(self.runtime_model)
+        model.key = self.openai_api_key
         convo = model.conversation()
         return convo
     
