@@ -2,9 +2,9 @@ from pydantic import BaseModel
 from typing import List
 
 class ParsedSermon(BaseModel):
-    url_slug: str = None
-    title: str = None
-    one_sentence_summary: str = None
-    announcements: List[str] = None
-    biblical_references: List[str] = None
-    speaker_name: str = None
+    url_slug: str 
+    title: str 
+    one_sentence_summary: str 
+    announcements: List[str] 
+    biblical_references: List[str] 
+    speaker_name: str 
