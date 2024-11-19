@@ -20,6 +20,7 @@ dependencies = [
     "flask_cors",
     "tiktoken",
     "simple-term-menu",
+    "scrapy",
     "llm-claude-3",
     "openai-whisper",
 ]
