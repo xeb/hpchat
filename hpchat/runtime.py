@@ -6,6 +6,7 @@ import yaml
 from pathlib import Path
 from openai import OpenAI
 from pydantic import BaseModel
+from hpchat import db
 
 class Runtime():
     def __init__(self, config_file="config.yaml"):
@@ -48,20 +49,6 @@ class Runtime():
     @property
     def system_prompt(self):
         return self.config.get("system_prompt", "")
-
-    def get_sermons(self):
-        """Presents a menu of the sermon to select"""
-        with open(self.sermon_list_path, 'r') as file:
-            return yaml.safe_load(file)
-
-    def get_sermon_by_slug(self, slug):
-        """Retrieves a specific sermon by its slug"""
-        sermons = self.get_sermons()
-        try:
-            return next(sermon for sermon in sermons if sermon["url_slug"] == slug)
-        except StopIteration:
-            return None  # or raise an exception if you prefer
-
 
     def parse_object(self, prompt: str, format: BaseModel, system_prompt: str = None):
         """Parse the object using the OpenAI API"""

@@ -1,13 +1,16 @@
+import sys
 import os
 import yaml
 import tqdm
 from itertools import chain
 from hpchat.runtime import Runtime
 from hpchat.sermon import ParsedSermon
+from hpchat import db
 
 class Preprocessor():
     def __init__(self, runtime: Runtime = Runtime()):
         self.runtime = runtime
+        db.create_sermons_table()
         pass
         
     def process_sermons(self):
@@ -17,6 +20,16 @@ class Preprocessor():
                 print(f"Reading {full_sermon_path}")
                 transcript = f.read()
 
+                # Get the filename without the extension
+                file_name = full_sermon_path.stem
+                print(f"Checking {file_name}")
+                existing_sermon = db.get(file_name)
+                if existing_sermon:
+                    print(f"Skipping! Already processed")
+                    continue
+                else:
+                    print(f"Processing {file_name}")
+
                 print("Parsing sermon content")
                 parsed_sermon = self.runtime.parse_object(
                     prompt=f"The transcript is: <TRANSCRIPT>{transcript}</TRANSCRIPT>", 
@@ -25,6 +38,7 @@ class Preprocessor():
                 
                 # TODO: dynamically the keys from ParsedSermon to this dict
                 sermon = {
+                    "file_name": file_name,
                     "url_slug": parsed_sermon.url_slug,
                     "title": parsed_sermon.title,
                     "one_sentence_summary": parsed_sermon.one_sentence_summary,
@@ -36,6 +50,8 @@ class Preprocessor():
                 }
 
                 sermons.append(sermon)
+
+                db.upsert(sermon)
         
         with open(self.runtime.sermon_list_path, 'w') as f:
             yaml.dump(sermons, f)

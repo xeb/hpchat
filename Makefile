@@ -17,6 +17,9 @@ setup: ## Sets up the project from a fresh clone
 chat: ## Starts a new chat session
 	python -m hpchat.cli
 
+shell: ## Starts a debug shell
+	python -m hpchat.shell
+
 transcribe: ## Transcribes all videos
 	python transcribe.py
 	

@@ -5,6 +5,7 @@ import time
 import code
 from runtime import Runtime
 from pathlib import Path
+from hpchat import db
 
 app = Flask(__name__)
 runtime = Runtime()
@@ -13,11 +14,11 @@ CORS(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html', sermons=runtime.get_sermons())
+    return render_template('index.html', sermons=db.listall())
 
 @app.route('/sermons/<slug>')
 def sermon(slug):
-    sermon = runtime.get_sermon_by_slug(slug)
+    sermon = db.get(url_slug=slug)
     return render_template('sermon.html', slug=slug, sermon=sermon)
 
 @app.route('/chat', methods=['POST'])
@@ -30,7 +31,7 @@ def chat():
         raise Exception("You must ask for SOMETHING")
     
     # TODO: We need to take the slug from the data, and then lookup the right sermon
-    sermon = runtime.get_sermon_by_slug(data["slug"])
+    sermon = db.get(url_slug=data["slug"])
     # print(sermon["file_path"])
     
     # sermon = "/Users/paulgustafson/working/hpchat/sermons/August 11, 2024 ｜ Harbor Point 10AM-segment.txt"

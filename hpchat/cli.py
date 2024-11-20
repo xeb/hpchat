@@ -6,6 +6,7 @@ import pyfiglet
 from termcolor import colored
 from simple_term_menu import TerminalMenu
 from pathlib import Path
+from hpchat import db
 
 def select_text_file(title=None, runtime: Runtime = None):
     file_names, txt_files = runtime.get_sermons()

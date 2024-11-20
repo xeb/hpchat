@@ -28,3 +28,4 @@ coverage.xml
 videos/
 output-backup/
 homeword/
+secrets.sh
