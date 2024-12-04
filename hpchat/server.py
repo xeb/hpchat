@@ -21,6 +21,11 @@ def sermon(slug):
     sermon = db.get(url_slug=slug)
     return render_template('sermon.html', slug=slug, sermon=sermon)
 
+# @app.route('/sermons_v2/<slug>')
+# def sermon(slug):
+#     sermon = db.get(url_slug=slug)
+#     return render_template('sermon_v2.html', slug=slug, sermon=sermon)
+
 @app.route('/chat', methods=['POST'])
 def chat():
     print("----")
