@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HPChat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-gray-100 flex justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">{{sermon.title}}</h1>
+        <h4>by {{sermon.speaker_name}}</h4>
+        <br/>
+        <b>One sentence summary: </b><p>{{sermon.one_sentence_summary}}</p>
+        <br/>
+        <!-- {% if sermon.announcements | length > 0 %}
+            <h5>Announcements:</h5>
+            <ul>
+            {% for announcement in sermon.announcements %}
+                <li>{{announcement}}</li>
+            {% endfor %}
+            </ul>
+        {% endif %} -->
+        <!-- <br/>
+        {% if sermon.biblical_references | length > 0 %}
+            <h5>Biblical References:</h5>
+            <ul>
+            {% for bref in sermon.biblical_references %}
+                <li>{{bref}}</li>
+            {% endfor %}
+            </ul>
+        {% endif %} -->
+        <form id="ajaxForm" class="space-y-4">
+            <div>
+                <!-- <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Select the sermon:</label> -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">How do you want to interact with the sermon, ask anything!</label>
+                    <input type="text" id="name" name="name" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="What do you wanna know?">
+                    <input type="hidden" id="slug" name="slug" value="{{slug}}">
+                    <!-- <input type="hidden" id="hidden-input" name="hidden-input" value="some-hidden-value"> -->
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Go!
+                </button>
+            </div>
+        </form>
+        <div class="relative">
+    <input id="inputBox" type="text" class="with-button w-64 p-4 pr-16 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter something...">
+    <button id="goButton" onclick="handleClick()" class="absolute right-1 top-1 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 active:bg-blue-800 focus:outline-none">
+      Go
+    </button>
+  </div>
+        <div id="response" class="mt-4 text-center text-sm"></div>
+        <ul id="responseList" class="mt-4 list-disc pl-5"></ul>
+    </div>
+
+    <script>
+        document.getElementById('ajaxForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            // console.log (form.elements.name.value);
+            const msg = form.elements.name.value;
+            const responseDiv = document.getElementById('response');
+            const question = document.getElementById('name');
+            const slug = document.getElementById('slug').value;
+            console.log(slug);
+            
+            // Create a new XMLHttpRequest object
+            const xhr = new XMLHttpRequest();
+            
+            // Configure it: POST-request for the URL /submit-form
+            xhr.open('POST', '/chat', true);
+            
+            // Set the Content-Type header
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            // Set up a handler for when the request finishes
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // const responseData = JSON.parse(xhr.responseText);
+                    // console.log (responseData);
+                    // responseDiv.textContent = responseData.response;
+                    // responseDiv.className = 'mt-4 text-center text-sm text-green-600';
+                    // Parse the JSON response
+                    const responseData = JSON.parse(xhr.responseText);
+                    
+                    // Get the response list
+                    const responseList = document.getElementById('responseList');
+                    
+                    // Create a new list item
+                    const listItem = document.createElement('li');
+                    listItem.className = 'p-3 bg-gray-50 rounded shadow-sm transition-all duration-300 ease-in-out';
+                    
+                    // Create content for the list item
+                    // let content = '';
+                    let content = `<strong class="block text-sm text-gray-600 mb-1">Response at ${new Date().toLocaleTimeString()}:</strong>`;
+                    content += '<ul class="list-disc pl-5 space-y-1">';
+                    for (const [key, value] of Object.entries(responseData)) {
+                        // content += `<li><strong>${key}:</strong> ${value}</li>`;
+                        content += `<li>${value}</li>`;
+
+                    }
+                    content += '</ul>';
+                    
+                    // Set the content of the list item
+                    const html = marked.parse(content);
+                    // listItem.innerHTML = marked(content);
+                    listItem.innerHTML = html;
+                    
+                    // Add a subtle animation effect
+                    listItem.style.opacity = '0';
+                    listItem.style.transform = 'translateY(-10px)';
+                    
+                    // Prepend the new list item to the response list
+                    responseList.insertBefore(listItem, responseList.firstChild);
+                    
+                    // Trigger the animation
+                    setTimeout(() => {
+                        listItem.style.opacity = '1';
+                        listItem.style.transform = 'translateY(0)';
+                    }, 10);
+                    question.value = "";
+                } else {
+                    responseDiv.textContent = 'Error submitting form. Please try again.';
+                    responseDiv.className = 'mt-4 text-center text-sm text-red-600';
+                }
+            };
+            
+            const req = {
+                slug: slug,
+                text: msg
+            }
+            console.log(req);
+            // Send the requestd
+            xhr.send(JSON.stringify(req));
+            // xhr.send('text=' + encodeURIComponent(msg));
+        });
+    </script>
+</body>
+</html>
