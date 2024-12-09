@@ -9,8 +9,20 @@
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col bg-gray-100 flex justify-center min-h-screen">
   <!-- Full-Width Text Input with Floating Button -->
-  <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">{{sermon.title}}</h1>
-  
+   <div class="text-gray-800 text-center bg-slate-300 p-1.5">
+    <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">{{sermon.title}}</h1>
+    <h3>by {{sermon.speaker_name}}</h3>
+    <br>
+    <b>One sentence summary: </b><p>{{sermon.one_sentence_summary}}</p>
+    <br/>
+    {% if sermon.biblical_references | length > 0 %}
+        <h5>Biblical References:</h5>
+        {% for bref in sermon.biblical_references %}
+            <a target="_blank" class="underline" href="https://www.biblegateway.com/passage/?search={{bref}}">{{bref}}</a>,
+        {% endfor %}
+    {% endif %}
+    <br><br>
+    </div>
   <header class="bg-sky-800 py-6">
     <div class="container mx-auto px-4 relative">
       <input 
@@ -22,7 +34,7 @@
       <input type="hidden" id="slug" name="slug" value="{{slug}}">
       <button 
         id="submitButton" 
-        class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        class="mr-2.5 absolute right-4 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         <svg id="buttonIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -43,7 +55,7 @@
   <!-- Footer -->
   <footer class="bg-gray-800 text-white py-4">
     <div class="container mx-auto px-4 text-center">
-      <p>&copy; 2024 Brand. All rights reserved.</p>
+      
     </div>
   </footer>
 
