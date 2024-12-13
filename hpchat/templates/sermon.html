@@ -12,6 +12,11 @@
    <div class="text-gray-800 text-center bg-slate-300 p-1.5">
     <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">{{sermon.title}}</h1>
     <h3>by {{sermon.speaker_name}}</h3>
+    <div>
+      <button id="play-button" class="items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+        Play
+    </button>
+    </div>
     <br>
     <b>One sentence summary: </b><p>{{sermon.one_sentence_summary}}</p>
     <br/>
@@ -172,6 +177,55 @@
             // xhr.send('text=' + encodeURIComponent(msg));
       }
     }
+
+
+    // A simple example of playing an audio file in the browser using JavaScript
+
+    // Step 1: Create an audio element
+    const audio = new Audio('/static/audio/tts_outputs/faith-and-anxiety.mp3'); // Replace with the actual path to your audio file
+    
+    // Step 2: Add event listeners if needed
+    // Example: Log a message when the audio starts playing
+    audio.addEventListener('play', () => {
+        console.log('Audio is now playing!');
+    });
+
+    // // Step 3: Play the audio
+    // function playAudio() {
+    //     console.log("play..")
+    //     audio.play()
+    //         .then(() => {
+    //             console.log('Playback started successfully.');
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error playing audio:', error);
+    //         });
+    // }
+
+    // Step 4: Add a button to trigger the audio playback
+    document.body.innerHTML += '<button id="play-button">Play Audio</button>';
+
+    // Step 5: Attach event listener to the button
+    const playButton = document.getElementById('play-button');
+    if (playButton) {     
+        playButton.addEventListener('click', () => {
+
+              audio.play();
+              // audio.pause();
+              console.log('Audio played.');
+          });
+    }
+
+    // Optional: Pause functionality
+    // document.body.innerHTML += '<button id="pause-button">Pause Audio</button>';
+    // const pauseButton = document.getElementById('pause-button');
+    // if (pauseButton) {
+    //     pauseButton.addEventListener('click', () => {
+    //         // audio.play();
+    //         audio.pause();
+    //         console.log('Audio paused.');
+    //     });
+    // }
   </script>
 </body>
 </html>
