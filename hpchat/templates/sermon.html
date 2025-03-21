@@ -6,35 +6,66 @@
   <title>HP Chat - {{sermon.title}}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-color: #f8f9fa;
+    }
+    
+    .nav-font {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#4f46e5',
+                    secondary: '#6366f1'
+                }
+            }
+        }
+    }
+  </script>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col bg-gray-100 flex justify-center min-h-screen">
-  <!-- Full-Width Text Input with Floating Button -->
-   <div class="text-gray-800 text-center bg-slate-300 p-1.5">
-    <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">{{sermon.title}}</h1>
-    <h3>by {{sermon.speaker_name}}</h3>
-    <br>
-    <b>One sentence summary: </b><p>{{sermon.one_sentence_summary}}</p>
-    <br/>
-    {% if sermon.biblical_references | length > 0 %}
-        <h5>Biblical References:</h5>
-        {% for bref in sermon.biblical_references %}
-            <a target="_blank" class="underline" href="https://www.biblegateway.com/passage/?search={{bref}}">{{bref}}</a>,
-        {% endfor %}
-    {% endif %}
-    <br><br>
+<body class="min-h-screen flex flex-col bg-gray-50">
+  {% include 'header.html' %}
+
+  <!-- Sermon Info Section -->
+  <div class="bg-gradient-to-r from-primary to-secondary text-white py-6">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-3xl font-bold mb-2 nav-font">{{sermon.title}}</h1>
+      <h3 class="text-xl mb-3">by {{sermon.speaker_name}}</h3>
+      <div class="max-w-3xl mx-auto bg-white/10 rounded-lg p-4 mb-4">
+        <p class="font-medium">{{sermon.one_sentence_summary}}</p>
+      </div>
+      {% if sermon.biblical_references | length > 0 %}
+        <div class="flex flex-wrap justify-center gap-2 mt-2">
+          {% for bref in sermon.biblical_references %}
+            <a target="_blank" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full text-sm transition-colors duration-150" 
+              href="https://www.biblegateway.com/passage/?search={{bref}}">{{bref}}</a>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
-  <header class="bg-sky-800 py-6">
+  </div>
+
+  <!-- Chat Input Area -->
+  <header class="bg-white py-6 shadow-sm">
     <div class="container mx-auto px-4 relative">
       <input 
         type="text" 
         id="textInput" 
-        placeholder="ex: What are the key take aways from the message?" 
-        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder="Ask a question about the sermon..." 
+        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
       />
       <input type="hidden" id="slug" name="slug" value="{{slug}}">
       <button 
         id="submitButton" 
-        class="mr-2.5 absolute right-4 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        class="absolute right-5 top-1/2 transform -translate-y-1/2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/50 nav-font"
       >
         <svg id="buttonIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -44,9 +75,9 @@
   </header>
 
   <!-- Content Section -->
-  <main class="flex-grow py-6">
+  <main class="flex-grow py-6 bg-gray-50">
     <div class="container mx-auto px-4">
-      <ul id="contentList" class="space-y-4">
+      <ul id="contentList" class="space-y-4 max-w-4xl mx-auto">
         <!-- Dynamically Rendered Content Will Appear Here -->
       </ul>
     </div>
@@ -55,7 +86,10 @@
   <!-- Footer -->
   <footer class="bg-gray-800 text-white py-4">
     <div class="container mx-auto px-4 text-center">
-      
+      <div class="flex justify-center items-center">
+        <img src="/static/images/logo.png" alt="HPChat Logo" class="h-8 mr-2 opacity-75">
+        <p class="text-sm nav-font">© 2025 HPChat</p>
+      </div>
     </div>
   </footer>
 
@@ -97,79 +131,94 @@
         buttonIcon.classList.add('hidden');
         submitButton.innerHTML += '<svg id="loadingSpinner" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>';
         
-        //addItem();
         // Create a new XMLHttpRequest object
         const xhr = new XMLHttpRequest();
-            
-            // Configure it: POST-request for the URL /submit-form
-            xhr.open('POST', '/chat', true);
-            // Set the Content-Type header
-            xhr.setRequestHeader('Content-Type', 'application/json');            
-            // Set up a handler for when the request finishes
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // const responseData = JSON.parse(xhr.responseText);
-                    // console.log (responseData);
-                    // responseDiv.textContent = responseData.response;
-                    // responseDiv.className = 'mt-4 text-center text-sm text-green-600';
-                    // Parse the JSON response
-                    const responseData = JSON.parse(xhr.responseText);
-                    
-                    // Get the response list
-                    //const responseList = document.getElementById('responseList');
-                    
-                    // Create a new list item
-                    const listItem = document.createElement('li');
-                    listItem.className = 'p-3 bg-slate-200 rounded shadow-lg transition-all duration-300 ease-in-out';
-                    
-                    // Create content for the list item
-                    // let content = '';
-                    let content = `<strong class="block text-sm text-slate-950 mb-1">${textInput.value}<br></strong><hr>`;
-                    content += '<p>';
-                    for (const [key, value] of Object.entries(responseData)) {
-                        // content += `<li><strong>${key}:</strong> ${value}</li>`;
-                        content += `${value}`;
-
-                    }
-                    content += '</p>';
-                    
-                    // Set the content of the list item
-                    const html = marked.parse(content);
-                    // listItem.innerHTML = marked(content);
-                    listItem.innerHTML = html;
-                    
-                    // Add a subtle animation effect
-                    listItem.style.opacity = '0';
-                    listItem.style.transform = 'translateY(-10px)';
-                    
-                    // Prepend the new list item to the response list
-                    contentList.insertBefore(listItem, contentList.firstChild);
-                    
-                    // Trigger the animation
-                    setTimeout(() => {
-                        listItem.style.opacity = '1';
-                        listItem.style.transform = 'translateY(0)';
-                    }, 10);
-                    textInput.value = ""
-                    // question.value = "";
-
-                    submitButton.disabled = false; // Re-enable the button after operation
-                    document.getElementById('loadingSpinner').remove();
-                    buttonIcon.classList.remove('hidden');
-                } else {
-                    responseDiv.textContent = 'Error submitting form. Please try again.';
-                    responseDiv.className = 'mt-4 text-center text-sm text-red-600';
+        
+        // Configure it: POST-request for the URL
+        xhr.open('POST', '/chat', true);
+        
+        // Set the Content-Type header
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        
+        // Set up a handler for when the request finishes
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the JSON response
+                const responseData = JSON.parse(xhr.responseText);
+                
+                // Create a new list item
+                const listItem = document.createElement('li');
+                listItem.className = 'p-6 bg-white rounded-lg shadow-md transition-all duration-300 ease-in-out border border-gray-100';
+                
+                // Create content for the list item
+                let content = `<div class="flex items-start mb-3 pb-3 border-b border-gray-100">
+                                <div class="bg-primary/10 p-2 rounded-full mr-3">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                  </svg>
+                                </div>
+                                <div class="flex-1">
+                                  <p class="font-medium text-gray-800 nav-font">${textInput.value}</p>
+                                </div>
+                              </div>`;
+                
+                content += '<div class="prose prose-slate">';
+                for (const [key, value] of Object.entries(responseData)) {
+                    content += `${value}`;
                 }
-            };
-            
-            const req = {
-                slug: slug.value,
-                text: textInput.value
+                content += '</div>';
+                
+                // Set the content of the list item
+                const html = marked.parse(content);
+                listItem.innerHTML = html;
+                
+                // Add a subtle animation effect
+                listItem.style.opacity = '0';
+                listItem.style.transform = 'translateY(-10px)';
+                
+                // Prepend the new list item to the response list
+                contentList.insertBefore(listItem, contentList.firstChild);
+                
+                // Trigger the animation
+                setTimeout(() => {
+                    listItem.style.opacity = '1';
+                    listItem.style.transform = 'translateY(0)';
+                }, 10);
+                
+                // Clear the input
+                textInput.value = "";
+
+                // Re-enable the button after operation
+                submitButton.disabled = false;
+                document.getElementById('loadingSpinner').remove();
+                buttonIcon.classList.remove('hidden');
+            } else {
+                // Create error notification
+                const errorItem = document.createElement('div');
+                errorItem.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg';
+                errorItem.textContent = 'Error submitting question. Please try again.';
+                document.body.appendChild(errorItem);
+                
+                // Remove error after 3 seconds
+                setTimeout(() => {
+                    errorItem.remove();
+                }, 3000);
+                
+                // Re-enable the button
+                submitButton.disabled = false;
+                document.getElementById('loadingSpinner').remove();
+                buttonIcon.classList.remove('hidden');
             }
-            console.log(req);
-            // Send the requestd
-            xhr.send(JSON.stringify(req));
-            // xhr.send('text=' + encodeURIComponent(msg));
+        };
+        
+        // Prepare the request data
+        const req = {
+            slug: slug.value,
+            text: textInput.value
+        };
+        
+        // Send the request
+        xhr.send(JSON.stringify(req));
       }
     }
   </script>
